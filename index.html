@@ -23,6 +23,7 @@
             --shadow: 0 4px 6px rgba(0,0,0,0.05);
             --hover-shadow: 0 8px 15px rgba(0,0,0,0.1);
             --header-height: 70px;
+            --sidebar-width: 280px;
         }
 
         [data-theme="dark"] {
@@ -45,10 +46,21 @@
         header {
             position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height);
             background-color: var(--card-bg); border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; z-index: 1000; box-shadow: var(--shadow);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; z-index: 1000; box-shadow: var(--shadow);
         }
+        
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-img { height: 40px; width: auto; }
+
+        /* Botón Menú Hamburguesa (Mobile) */
+        .hamburger-btn {
+            background: none; border: none; font-size: 1.2rem; color: var(--text-color);
+            cursor: pointer; display: none; padding: 5px;
+        }
+        .hamburger-btn:hover { color: var(--accent-color); }
+
         .search-bar { flex: 1; max-width: 500px; margin: 0 2rem; position: relative; display: none; }
         @media(min-width: 768px) { .search-bar { display: block; } }
         .search-bar input {
@@ -67,11 +79,62 @@
         }
 
         /* --- Layout Principal --- */
-        .container { display: flex; min-height: calc(100vh - var(--header-height)); }
+        .container { display: flex; min-height: calc(100vh - var(--header-height)); position: relative; }
         
-        /* --- Filtros --- */
-        aside { width: 250px; padding: 2rem; background-color: var(--card-bg); border-right: 1px solid var(--border-color); display: none; }
-        @media(min-width: 900px) { aside { display: block; } }
+        /* --- Sidebar / Filtros --- */
+        aside {
+            width: 250px;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - var(--header-height));
+            overflow-y: auto;
+            /* Posición por defecto (Desktop) */
+            position: relative;
+            z-index: 1100;
+        }
+
+        /* Comportamiento Móvil (Estilo Amazon) */
+        @media(max-width: 899px) {
+            aside {
+                position: fixed;
+                top: var(--header-height);
+                left: calc(-1 * var(--sidebar-width)); /* Oculto a la izquierda */
+                width: var(--sidebar-width);
+                max-width: 85vw;
+                height: 100vh;
+                transition: left 0.3s ease-in-out;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+                padding: 1.5rem;
+            }
+
+            /* Estado activo del menú móvil */
+            aside.open {
+                left: 0;
+            }
+
+            .hamburger-btn { display: block; } /* Mostrar hamburguesa */
+        }
+
+        .mobile-close-btn {
+            display: none;
+            align-self: flex-end;
+            background: none; border: none; font-size: 1.5rem; color: var(--text-color); margin-bottom: 1rem;
+        }
+        @media(max-width: 899px) { .mobile-close-btn { display: block; } }
+
+        /* Overlay para móvil */
+        .mobile-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); z-index: 1050;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .mobile-overlay.active { display: block; opacity: 1; }
+
+        /* Estilos del Filtro */
         .filter-section { margin-bottom: 2rem; }
         .filter-title { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; text-transform: uppercase; color: var(--primary-color); }
         .filter-group { list-style: none; }
@@ -79,19 +142,8 @@
         .filter-item:hover, .filter-item.active { color: var(--accent-color); font-weight: 600; }
         .filter-checkbox { accent-color: var(--accent-color); }
 
-        .mobile-filters {
-            display: flex; overflow-x: auto; gap: 10px; padding: 1rem; background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color); white-space: nowrap;
-        }
-        @media(min-width: 900px) { .mobile-filters { display: none; } }
-        .filter-chip {
-            padding: 8px 16px; border-radius: 20px; background-color: var(--bg-color); border: 1px solid var(--border-color);
-            color: var(--text-secondary); cursor: pointer; font-size: 0.9rem;
-        }
-        .filter-chip.active { background-color: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); }
-
         /* --- Grid --- */
-        main { flex: 1; padding: 1.5rem; background-color: var(--bg-color); }
+        main { flex: 1; padding: 1.5rem; background-color: var(--bg-color); width: 100%; }
         .product-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
         .product-count { color: var(--text-secondary); font-size: 0.9rem; }
         .sort-select {
@@ -161,132 +213,59 @@
         .close-modal-btn:hover { background: rgba(0,0,0,0.2); }
         .modal-body { display: flex; width: 100%; overflow: hidden; height: 100%; }
         
-        /* --- GALERÍA DE IMÁGENES (Estilo Shein) --- */
+        /* --- GALERÍA DE IMÁGENES --- */
         .modal-image-col {
-            flex: 1.2; /* Un poco más ancha */
+            flex: 1.2;
             background-color: #f0f0f0;
             display: flex;
             overflow-y: auto;
             padding: 2rem;
             min-height: 400px;
-            transition: all 0.3s ease;
         }
         [data-theme="dark"] .modal-image-col { background-color: #2a2a2a; }
 
-        .gallery-wrapper {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            gap: 20px;
-        }
-
-        /* Columna de Thumbnails */
+        .gallery-wrapper { display: flex; width: 100%; height: 100%; gap: 20px; }
         .thumbnail-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 80px;
-            overflow-y: auto;
+            display: flex; flex-direction: column; gap: 10px; width: 80px; overflow-y: auto;
         }
-        
         .thumbnail-item {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
-            opacity: 0.6;
-            transition: all 0.2s;
-            flex-shrink: 0; /* Evitar que se aplaste */
+            width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; cursor: pointer;
+            border: 2px solid transparent; opacity: 0.6; transition: all 0.2s; flex-shrink: 0;
         }
-        
         .thumbnail-item:hover { opacity: 1; }
         .thumbnail-item.active { border-color: var(--primary-color); opacity: 1; }
         .thumbnail-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Imagen Principal */
         .main-image-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: var(--card-bg);
-            position: relative;
-            cursor: zoom-in;
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; overflow: hidden; background-color: var(--card-bg);
+            position: relative; cursor: zoom-in;
         }
+        .modal-img { max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity 0.3s ease; }
 
-        .modal-img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            transition: opacity 0.3s ease;
-        }
-
-        /* Overlay de Lupa (Zoom Trigger) */
+        /* Zoom Trigger */
         .zoom-trigger {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none; /* Dejar pasar el click al contenedor */
-            color: white;
-            font-size: 2.5rem;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.2s ease; pointer-events: none; color: white; font-size: 2.5rem;
         }
+        .main-image-container:hover .zoom-trigger { opacity: 1; }
 
-        .main-image-container:hover .zoom-trigger {
-            opacity: 1;
-        }
-
-        /* --- MODO ZOOM (Pantalla Completa) --- */
+        /* --- MODO ZOOM --- */
         .modal-content.is-zoomed {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 0;
-            width: 100%; height: 100%;
+            max-width: 100%; max-height: 100%; border-radius: 0; width: 100%; height: 100%;
         }
-        
-        .modal-content.is-zoomed .modal-image-col {
-            flex: 1;
-            background-color: black; /* Fondo negro para zoom */
-            padding: 0;
-            overflow: hidden;
-        }
-        
-        .modal-content.is-zoomed .modal-details-col {
-            display: none; /* Ocultar detalles en zoom */
-        }
-
-        .modal-content.is-zoomed .main-image-container {
-            border-radius: 0;
-            cursor: zoom-out;
-            padding: 20px;
-        }
-
+        .modal-content.is-zoomed .modal-image-col { flex: 1; background-color: black; padding: 0; overflow: hidden; }
+        .modal-content.is-zoomed .modal-details-col { display: none; }
+        .modal-content.is-zoomed .main-image-container { border-radius: 0; cursor: zoom-out; padding: 20px; }
         .modal-content.is-zoomed .thumbnail-list {
-            width: 100px; /* Hacer thumbnails un poco más grandes en zoom */
-            background-color: rgba(0,0,0,0.6);
-            padding: 10px;
-            backdrop-filter: blur(5px);
+            width: 100px; background-color: rgba(0,0,0,0.6); padding: 10px; backdrop-filter: blur(5px);
         }
 
-        /* Responsive Galeria */
         @media (max-width: 768px) {
-            .modal-content.is-zoomed {
-                /* En móvil el zoom ocupa todo */
-            }
             .gallery-wrapper { flex-direction: column; }
             .thumbnail-list {
-                flex-direction: row;
-                width: 100%;
-                height: auto;
-                order: 2; /* Thumbnails abajo en móvil */
+                flex-direction: row; width: 100%; height: auto; order: 2;
             }
             .thumbnail-item { width: 60px; }
             .main-image-container { order: 1; height: 350px; }
@@ -361,8 +340,7 @@
         .wishlist-sidebar {
             background-color: var(--card-bg); width: 100%; max-width: 900px; height: 90vh;
             display: flex; flex-direction: column; margin: auto; border-radius: 12px; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 95%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 95%;
         }
         .wishlist-items { flex: 1; overflow-y: auto; padding: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.5rem; }
         .wishlist-item-card {
@@ -393,8 +371,14 @@
 
     <!-- Encabezado -->
     <header>
-        <div class="logo-container" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-            <img src="https://z-cdn-media.chatglm.cn/files/8716b5a9-6848-451c-adf4-cd90b8d12c1f.png?auth_key=1869613081-6501802bdd194043b64e07180eca8ae5-0-b629bf343bae74bfbd8665afbff40994" alt="Logo YILI & LIA" class="logo-img">
+        <div class="header-left">
+            <!-- Botón Menú Móvil (Hamburguesa) -->
+            <button class="hamburger-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo-container" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <img src="https://z-cdn-media.chatglm.cn/files/8716b5a9-6848-451c-adf4-cd90b8d12c1f.png?auth_key=1869613081-6501802bdd194043b64e07180eca8ae5-0-b629bf343bae74bfbd8665afbff40994" alt="Logo YILI & LIA" class="logo-img">
+            </div>
         </div>
 
         <div class="search-bar">
@@ -418,7 +402,13 @@
     </header>
 
     <div class="container">
-        <aside>
+        <!-- Overlay para cerrar menú móvil -->
+        <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+        <aside id="sidebar">
+            <!-- Botón cerrar solo visible en móvil -->
+            <button class="mobile-close-btn" onclick="toggleMobileMenu()">&times;</button>
+            
             <div class="filter-section">
                 <h3 class="filter-title">Categorías</h3>
                 <ul class="filter-group" id="categoryFilters">
@@ -445,14 +435,6 @@
         </aside>
 
         <main>
-            <div class="mobile-filters" id="mobileFilterContainer">
-                <div class="filter-chip active" onclick="filterByCategory('Todos')">Todos</div>
-                <div class="filter-chip" onclick="filterByCategory('Mujeres')">Mujeres</div>
-                <div class="filter-chip" onclick="filterByCategory('Hombres')">Hombres</div>
-                <div class="filter-chip" onclick="filterByCategory('Niños')">Niños</div>
-                <div class="filter-chip" onclick="toggleSaleOnly()">Oferta</div>
-            </div>
-
             <div class="product-header">
                 <span class="product-count" id="resultCount">Mostrando todos los productos</span>
                 <select class="sort-select" onchange="sortProducts(this.value)">
@@ -481,10 +463,10 @@
                         <!-- Imagen Principal -->
                         <div class="main-image-container" id="mainImageContainer">
                             <img src="" alt="Producto" id="modalImg" class="modal-img">
-                            <!-- Overlay de Zoom (Lupa con signo más)
+                            <!-- Overlay de Zoom (Lupa con signo más) -->
                             <div class="zoom-trigger">
                                 <i class="fas fa-search-plus"></i>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -772,7 +754,7 @@
             }
         ];
 
-        // --- 2. Estado Global ---
+        // --- 2. Estado Global (Con Persistencia LocalStorage) ---
         let currentData = [...productDatabase];
         let currentCategory = 'Todos';
         let wishlist = JSON.parse(localStorage.getItem('yili_wishlist')) || [];
@@ -912,11 +894,8 @@
         function filterByCategory(category) {
             currentCategory = category;
             document.querySelectorAll('.filter-item').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active'));
             const desktopItems = document.querySelectorAll('#categoryFilters .filter-item');
-            const mobileItems = document.querySelectorAll('.filter-chip');
             desktopItems.forEach(item => { if(item.textContent.includes(category)) item.classList.add('active'); });
-            mobileItems.forEach(chip => { if(chip.textContent.includes(category)) chip.classList.add('active'); });
             applyFilters();
         }
 
@@ -932,12 +911,11 @@
                 return matchCategory && matchType && matchSale;
             });
             renderProducts(currentData);
-        }
-
-        function toggleSaleOnly() {
-            const checkbox = document.getElementById('saleOnly');
-            checkbox.checked = !checkbox.checked;
-            applyFilters();
+            
+            // Si estamos en móvil, cerrar el menú después de filtrar para ver resultados
+            if(window.innerWidth < 900) {
+                toggleMobileMenu(false); // false fuerza a cerrar
+            }
         }
 
         function sortProducts(criteria) {
@@ -954,9 +932,26 @@
             renderProducts(filtered);
         });
 
-        // --- 6. LÓGICA DEL MODAL PRODUCTO CON ZOOM ---
+        // --- 6. LÓGICA DEL MENÚ MÓVIL (Estilo Amazon) ---
+        function toggleMobileMenu(forceState) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            const isOpen = forceState !== undefined ? forceState : !sidebar.classList.contains('open');
+
+            if (isOpen) {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Evitar scroll de fondo
+            } else {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Restaurar scroll
+            }
+        }
+
+        // --- 7. LÓGICA DEL MODAL PRODUCTO CON ZOOM ---
         const modal = document.getElementById('productModal');
-        const modalContent = document.getElementById('modalContent');
 
         function openModal(productId) {
             const product = productDatabase.find(p => p.id === productId);
@@ -966,7 +961,7 @@
             selectedColor = null;
 
             // Reset Zoom state
-            modalContent.classList.remove('is-zoomed');
+            document.getElementById('modalContent').classList.remove('is-zoomed');
 
             // Datos básicos
             document.getElementById('modalCategory').textContent = product.category + ' - ' + product.type;
@@ -1050,19 +1045,11 @@
             }, 150);
         }
 
-        // --- Lógica de ZOOM ---
-        const mainImageContainer = document.getElementById('mainImageContainer');
-
-        mainImageContainer.addEventListener('click', (e) => {
-            // Toggle zoom al hacer clic en el contenedor de la imagen
-            modalContent.classList.toggle('is-zoomed');
-        });
-
         function closeModal() {
             modal.classList.remove('active');
             document.body.style.overflow = 'auto';
             activeModalProduct = null;
-            modalContent.classList.remove('is-zoomed');
+            document.getElementById('modalContent').classList.remove('is-zoomed');
         }
         
         function toggleModalWishlist() {
@@ -1073,7 +1060,7 @@
 
         modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
 
-        // --- 7. LÓGICA DEL CARRITO con Persistencia ---
+        // --- 8. LÓGICA DEL CARRITO con Persistencia ---
         const cartModal = document.getElementById('cartModal');
         const cartItemsContainer = document.getElementById('cartItemsContainer');
         const cartTotalEl = document.getElementById('cartTotal');
@@ -1176,7 +1163,13 @@
             document.body.style.overflow = 'auto';
         }
 
-        // --- 8. UI General ---
+        // --- 9. Lógica de Zoom (Lupa) ---
+        const mainImageContainer = document.getElementById('mainImageContainer');
+        mainImageContainer.addEventListener('click', (e) => {
+            document.getElementById('modalContent').classList.toggle('is-zoomed');
+        });
+
+        // --- 10. UI General ---
         function showToast(msg) {
             const toast = document.getElementById('toast');
             document.getElementById('toastMessage').textContent = msg;
