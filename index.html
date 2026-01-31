@@ -23,7 +23,8 @@
             --shadow: 0 4px 6px rgba(0,0,0,0.05);
             --hover-shadow: 0 8px 15px rgba(0,0,0,0.1);
             --header-height: 70px;
-            --sidebar-width: 280px;
+            --google-color: #DB4437;
+            --facebook-color: #4267B2;
         }
 
         [data-theme="dark"] {
@@ -50,11 +51,9 @@
         }
         
         .header-left { display: flex; align-items: center; gap: 10px; }
-        
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-img { height: 40px; width: auto; }
 
-        /* Botón Menú Hamburguesa (Mobile) */
         .hamburger-btn {
             background: none; border: none; font-size: 1.2rem; color: var(--text-color);
             cursor: pointer; display: none; padding: 5px;
@@ -69,8 +68,8 @@
             color: var(--text-color); outline: none;
         }
         .search-bar i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
-        .user-actions { display: flex; align-items: center; gap: 20px; }
-        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--text-color); position: relative; }
+        .user-actions { display: flex; align-items: center; gap: 15px; } /* Reducido gap ligeramente */
+        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--text-color); position: relative; display: flex; align-items: center; gap: 5px;}
         .icon-btn:hover { color: var(--accent-color); }
         .badge {
             position: absolute; top: -8px; right: -8px; background-color: var(--accent-color); color: white;
@@ -78,63 +77,67 @@
             display: flex; align-items: center; justify-content: center;
         }
 
+        /* --- DROPDOWN MENU (NUEVO) --- */
+        .user-dropdown { position: relative; }
+        .dropdown-menu {
+            position: absolute; top: 120%; right: 0;
+            background-color: var(--card-bg);
+            width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 2001; /* Un poco más alto que el header */
+            padding: 8px 0;
+            border: 1px solid var(--border-color);
+            animation: slideUp 0.2s ease-out;
+        }
+        .dropdown-menu.show { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .dropdown-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.2s;
+        }
+        .dropdown-item:hover { background-color: var(--bg-color); color: var(--accent-color); }
+        .dropdown-divider { height: 1px; background-color: var(--border-color); margin: 5px 0; }
+
         /* --- Layout Principal --- */
         .container { display: flex; min-height: calc(100vh - var(--header-height)); position: relative; }
         
         /* --- Sidebar / Filtros --- */
         aside {
-            width: 250px;
-            padding: 2rem;
-            background-color: var(--card-bg);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - var(--header-height));
-            overflow-y: auto;
-            /* Posición por defecto (Desktop) */
-            position: relative;
-            z-index: 1100;
+            width: 280px; padding: 2rem; background-color: var(--card-bg); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; height: calc(100vh - var(--header-height)); overflow-y: auto;
+            position: relative; z-index: 1100;
         }
 
-        /* Comportamiento Móvil (Estilo Amazon) */
         @media(max-width: 899px) {
             aside {
-                position: fixed;
-                top: var(--header-height);
-                left: calc(-1 * var(--sidebar-width)); /* Oculto a la izquierda */
-                width: var(--sidebar-width);
-                max-width: 85vw;
-                height: 100vh;
-                transition: left 0.3s ease-in-out;
-                box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-                padding: 1.5rem;
+                position: fixed; top: var(--header-height); left: -300px;
+                width: 280px; max-width: 85vw; height: 100vh;
+                transition: left 0.3s ease-in-out; box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 1.5rem;
             }
-
-            /* Estado activo del menú móvil */
-            aside.open {
-                left: 0;
-            }
-
-            .hamburger-btn { display: block; } /* Mostrar hamburguesa */
+            aside.open { left: 0; }
+            .hamburger-btn { display: block; }
         }
 
         .mobile-close-btn {
-            display: none;
-            align-self: flex-end;
-            background: none; border: none; font-size: 1.5rem; color: var(--text-color); margin-bottom: 1rem;
+            display: none; align-self: flex-end; background: none; border: none; font-size: 1.5rem; color: var(--text-color); margin-bottom: 1rem;
         }
         @media(max-width: 899px) { .mobile-close-btn { display: block; } }
 
-        /* Overlay para móvil */
         .mobile-overlay {
-            display: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5); z-index: 1050;
-            opacity: 0; transition: opacity 0.3s ease;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); z-index: 1050; opacity: 0; transition: opacity 0.3s ease;
         }
         .mobile-overlay.active { display: block; opacity: 1; }
 
-        /* Estilos del Filtro */
         .filter-section { margin-bottom: 2rem; }
         .filter-title { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; text-transform: uppercase; color: var(--primary-color); }
         .filter-group { list-style: none; }
@@ -142,7 +145,30 @@
         .filter-item:hover, .filter-item.active { color: var(--accent-color); font-weight: 600; }
         .filter-checkbox { accent-color: var(--accent-color); }
 
-        /* --- Grid --- */
+        /* --- GRID DOUBLE SLIDER CSS --- */
+        .range-slider-container { padding: 10px 0; }
+        .slider-wrapper { position: relative; width: 100%; height: 25px; }
+        .slider-track-bg, .slider-track-fill {
+            position: absolute; top: 50%; transform: translateY(-50%); height: 6px; border-radius: 3px;
+        }
+        .slider-track-bg { width: 100%; background-color: var(--border-color); z-index: 1; }
+        .slider-track-fill { background-color: var(--accent-color); z-index: 2; }
+        .range-input {
+            position: absolute; top: 50%; transform: translateY(-50%); width: 100%; pointer-events: none;
+            -webkit-appearance: none; background: none; z-index: 3; margin: 0;
+        }
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none; pointer-events: all; width: 18px; height: 18px; border-radius: 50%;
+            background-color: #fff; border: 2px solid var(--accent-color); cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.3); transition: transform 0.1s;
+        }
+        .range-input::-webkit-slider-thumb:hover { transform: scale(1.1); }
+        .range-input::-moz-range-thumb {
+            pointer-events: all; width: 18px; height: 18px; border-radius: 50%;
+            background-color: #fff; border: 2px solid var(--accent-color); cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .range-input::-webkit-slider-runnable-track, .range-input::-moz-range-track { width: 100%; height: 0; background: transparent; }
+
+        /* --- Grid Principal --- */
         main { flex: 1; padding: 1.5rem; background-color: var(--bg-color); width: 100%; }
         .product-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
         .product-count { color: var(--text-secondary); font-size: 0.9rem; }
@@ -162,9 +188,8 @@
         .card-image-container { position: relative; width: 100%; padding-top: 133%; background-color: #eee; overflow: hidden; }
         .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .card:hover .card-img { transform: scale(1.05); }
-        .badge { position: absolute; top: 10px; left: 10px; background-color: #ff4757; color: white; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; z-index: 2; }
+        .badge-card { position: absolute; top: 10px; left: 10px; background-color: #ff4757; color: white; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; z-index: 2; }
 
-        /* Botón Wishlist en Tarjeta */
         .card-wishlist-btn {
             position: absolute; top: 10px; right: 10px; z-index: 5;
             background: rgba(255,255,255,0.9); width: 32px; height: 32px; border-radius: 50%;
@@ -194,85 +219,101 @@
         .old-price { text-decoration: line-through; color: var(--text-secondary); font-size: 0.85rem; }
         .rating { color: #ffc107; font-size: 0.8rem; margin-top: 5px; }
 
-        /* --- MODAL DE PRODUCTO --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
-            z-index: 2000; display: none; justify-content: center; align-items: center; padding: 1rem; backdrop-filter: blur(5px);
+        /* --- MODALES GENERALES --- */
+        .modal-overlay, .auth-overlay, .cart-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); z-index: 2000; display: none;
+            backdrop-filter: blur(5px);
         }
-        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-overlay.active, .auth-overlay.active, .cart-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- AUTH MODAL --- */
+        .auth-modal {
+            background-color: var(--card-bg); width: 100%; max-width: 400px;
+            border-radius: 12px; position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin: auto;
+        }
+        .auth-header { padding: 1.5rem; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .auth-tabs { display: flex; margin-bottom: 1.5rem; }
+        .auth-tab {
+            flex: 1; padding: 10px; text-align: center; cursor: pointer;
+            border-bottom: 2px solid transparent; font-weight: 600; color: var(--text-secondary);
+        }
+        .auth-tab.active { border-color: var(--accent-color); color: var(--primary-color); }
+        .auth-form { padding: 0 1.5rem 1.5rem; display: none; }
+        .auth-form.active { display: block; }
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; color: var(--text-color); }
+        .input-group input, .input-group select {
+            width: 100%; padding: 10px; border: 1px solid var(--border-color);
+            border-radius: 5px; background-color: var(--bg-color); color: var(--text-color);
+            outline: none;
+        }
+        .btn-primary {
+            width: 100%; padding: 12px; background-color: var(--primary-color);
+            color: var(--bg-color); border: none; border-radius: 5px;
+            font-weight: 600; cursor: pointer; font-size: 1rem;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+        .social-login { margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
+        .social-btn {
+            width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 10px; border: 1px solid var(--border-color); border-radius: 5px;
+            background-color: var(--bg-color); color: var(--text-color); cursor: pointer; font-weight: 500;
+            transition: all 0.2s; margin-bottom: 10px;
+        }
+        .social-btn:hover { background-color: var(--border-color); }
+        .social-btn.google:hover { border-color: var(--google-color); color: var(--google-color); }
+        .social-btn.facebook:hover { border-color: var(--facebook-color); color: var(--facebook-color); }
+
+        /* --- PRODUCT MODAL --- */
         .modal-content {
             background-color: var(--card-bg); width: 100%; max-width: 1000px; max-height: 90vh; border-radius: 12px;
             position: relative; display: flex; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
+            margin: auto;
         }
         .close-modal-btn {
             position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.1); border: none;
             width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10; color: var(--text-color);
         }
-        .close-modal-btn:hover { background: rgba(0,0,0,0.2); }
         .modal-body { display: flex; width: 100%; overflow: hidden; height: 100%; }
-        
-        /* --- GALERÍA DE IMÁGENES --- */
         .modal-image-col {
-            flex: 1.2;
-            background-color: #f0f0f0;
-            display: flex;
-            overflow-y: auto;
-            padding: 2rem;
-            min-height: 400px;
+            flex: 1.2; background-color: #f0f0f0; display: flex; overflow-y: auto; padding: 2rem; min-height: 400px;
         }
         [data-theme="dark"] .modal-image-col { background-color: #2a2a2a; }
-
         .gallery-wrapper { display: flex; width: 100%; height: 100%; gap: 20px; }
-        .thumbnail-list {
-            display: flex; flex-direction: column; gap: 10px; width: 80px; overflow-y: auto;
-        }
-        .thumbnail-item {
-            width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; cursor: pointer;
-            border: 2px solid transparent; opacity: 0.6; transition: all 0.2s; flex-shrink: 0;
-        }
+        .thumbnail-list { display: flex; flex-direction: column; gap: 10px; width: 80px; overflow-y: auto; }
+        .thumbnail-item { width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: all 0.2s; flex-shrink: 0; }
         .thumbnail-item:hover { opacity: 1; }
         .thumbnail-item.active { border-color: var(--primary-color); opacity: 1; }
         .thumbnail-item img { width: 100%; height: 100%; object-fit: cover; }
-
         .main-image-container {
             flex: 1; display: flex; align-items: center; justify-content: center;
             border-radius: 8px; overflow: hidden; background-color: var(--card-bg);
             position: relative; cursor: zoom-in;
         }
         .modal-img { max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity 0.3s ease; }
-
-        /* Zoom Trigger */
         .zoom-trigger {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;
             opacity: 0; transition: opacity 0.2s ease; pointer-events: none; color: white; font-size: 2.5rem;
         }
         .main-image-container:hover .zoom-trigger { opacity: 1; }
-
-        /* --- MODO ZOOM --- */
-        .modal-content.is-zoomed {
-            max-width: 100%; max-height: 100%; border-radius: 0; width: 100%; height: 100%;
-        }
+        .modal-content.is-zoomed { max-width: 100%; max-height: 100%; border-radius: 0; width: 100%; height: 100%; }
         .modal-content.is-zoomed .modal-image-col { flex: 1; background-color: black; padding: 0; overflow: hidden; }
         .modal-content.is-zoomed .modal-details-col { display: none; }
         .modal-content.is-zoomed .main-image-container { border-radius: 0; cursor: zoom-out; padding: 20px; }
-        .modal-content.is-zoomed .thumbnail-list {
-            width: 100px; background-color: rgba(0,0,0,0.6); padding: 10px; backdrop-filter: blur(5px);
-        }
+        .modal-content.is-zoomed .thumbnail-list { width: 100px; background-color: rgba(0,0,0,0.6); padding: 10px; backdrop-filter: blur(5px); }
 
         @media (max-width: 768px) {
             .gallery-wrapper { flex-direction: column; }
-            .thumbnail-list {
-                flex-direction: row; width: 100%; height: auto; order: 2;
-            }
+            .thumbnail-list { flex-direction: row; width: 100%; height: auto; order: 2; }
             .thumbnail-item { width: 60px; }
             .main-image-container { order: 1; height: 350px; }
         }
 
         .modal-details-col { flex: 1; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; }
-        
         .modal-wishlist-row { display: flex; justify-content: flex-end; }
         .modal-wishlist-btn {
             background: none; border: 1px solid var(--border-color); padding: 8px 15px;
@@ -281,7 +322,6 @@
         }
         .modal-wishlist-btn:hover { background-color: var(--bg-color); border-color: var(--primary-color); }
         .modal-wishlist-btn.active { border-color: var(--heart-color); color: var(--heart-color); background-color: rgba(255, 71, 87, 0.05); }
-
         .modal-category { color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
         .modal-title { font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
         .modal-price-row { display: flex; align-items: baseline; gap: 15px; margin-top: 5px; }
@@ -299,22 +339,15 @@
         .modal-add-btn { background-color: var(--primary-color); color: var(--bg-color); border: none; padding: 15px; font-size: 1rem; font-weight: 700; border-radius: 8px; cursor: pointer; width: 100%; margin-top: auto; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .modal-add-btn:hover { opacity: 0.9; }
 
-        /* --- MODAL CARRITO --- */
-        .cart-overlay {
-            position: fixed; top: 0; right: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
-            z-index: 2500; display: none; justify-content: flex-end;
-        }
-        .cart-overlay.active { display: flex; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-
+        /* --- CART SIDEBAR --- */
         .cart-sidebar {
             background-color: var(--card-bg); width: 100%; max-width: 400px; height: 100%;
             display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+            margin-left: auto;
         }
         .cart-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .cart-header h2 { font-size: 1.2rem; color: var(--primary-color); }
         .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem; }
-        
         .cart-item { display: flex; gap: 15px; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); }
         .cart-item-img { width: 70px; height: 90px; object-fit: cover; border-radius: 5px; }
         .cart-item-details { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
@@ -328,19 +361,17 @@
         .qty-val { font-size: 0.9rem; width: 20px; text-align: center; font-weight: 600; }
         .remove-btn { background: none; border: none; color: #ff4757; cursor: pointer; font-size: 0.9rem; }
         .remove-btn:hover { text-decoration: underline; }
-
         .cart-empty { text-align: center; margin-top: 2rem; color: var(--text-secondary); }
-        
         .cart-footer { padding: 1.5rem; border-top: 1px solid var(--border-color); background-color: var(--card-bg); }
         .cart-total-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; color: var(--primary-color); }
         .checkout-btn { width: 100%; padding: 12px; background-color: var(--primary-color); color: var(--bg-color); border: none; border-radius: 5px; font-weight: 600; cursor: pointer; }
         .checkout-btn:hover { background-color: var(--accent-color); }
 
-        /* --- MODAL LISTA DE DESEOS --- */
+        /* --- ORDERS / WISHLIST SIDEBAR (Comparten estilo) --- */
         .wishlist-sidebar {
             background-color: var(--card-bg); width: 100%; max-width: 900px; height: 90vh;
             display: flex; flex-direction: column; margin: auto; border-radius: 12px; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 95%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         .wishlist-items { flex: 1; overflow-y: auto; padding: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.5rem; }
         .wishlist-item-card {
@@ -357,7 +388,23 @@
         }
         .wishlist-delete:hover { background: var(--heart-color); }
 
-        /* --- Toast --- */
+        /* --- ORDER STYLES --- */
+        .order-card {
+            border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem;
+            margin-bottom: 1.5rem; background-color: var(--card-bg);
+        }
+        .order-header {
+            display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem; margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-secondary);
+        }
+        .order-status { color: var(--accent-color); font-weight: bold; text-transform: uppercase; }
+        .order-item-preview {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 5px; font-size: 0.9rem;
+        }
+        .order-item-preview img { width: 30px; height: 30px; object-fit: cover; border-radius: 4px; }
+        #ordersContainer { display: flex; flex-direction: column; }
+
+        /* --- TOAST --- */
         .toast {
             position: fixed; bottom: 20px; right: 20px; background-color: var(--primary-color); color: var(--bg-color);
             padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -372,7 +419,6 @@
     <!-- Encabezado -->
     <header>
         <div class="header-left">
-            <!-- Botón Menú Móvil (Hamburguesa) -->
             <button class="hamburger-btn" onclick="toggleMobileMenu()">
                 <i class="fas fa-bars"></i>
             </button>
@@ -387,13 +433,49 @@
         </div>
 
         <div class="user-actions">
+            <!-- NUEVO DROPDOWN DE USUARIO -->
+            <div class="user-dropdown">
+                <button class="icon-btn" onclick="toggleUserDropdown()">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="authBtnText">Cuenta</span>
+                    <i class="fas fa-chevron-down" style="font-size: 0.7em; margin-left: 2px; opacity: 0.7;"></i>
+                </button>
+                
+                <div class="dropdown-menu" id="userDropdownMenu">
+                    <!-- Opciones para NO Logueado -->
+                    <div id="guestOptions">
+                        <div class="dropdown-item" onclick="openAuthAndClose('login')">
+                            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                        </div>
+                        <div class="dropdown-item" onclick="openAuthAndClose('register')">
+                            <i class="fas fa-user-plus"></i> Registrarse
+                        </div>
+                    </div>
+
+                    <!-- Opciones para Logueado -->
+                    <div id="userOptions" style="display: none;">
+                        <div class="dropdown-item" style="cursor: default; font-weight: 600; color: var(--accent-color);">
+                            <i class="fas fa-user"></i> <span id="dropdownUserName">Usuario</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" onclick="logoutAndClose()">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <button class="icon-btn" id="themeToggle" title="Cambiar Tema"><i class="fas fa-moon"></i></button>
-            <!-- Botón Wishlist -->
+            
+            <!-- BOTÓN MIS PEDIDOS -->
+            <button class="icon-btn" onclick="openOrders()" title="Mis Pedidos">
+                <i class="fas fa-receipt"></i>
+            </button>
+
             <button class="icon-btn" onclick="openWishlist()" title="Lista de Deseos">
                 <i class="fas fa-heart"></i>
                 <span class="badge" id="wishlistCount">0</span>
             </button>
-            <!-- Botón Carrito -->
             <button class="icon-btn" onclick="openCart()" title="Ver Cesta">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="badge" id="cartCount">0</span>
@@ -406,7 +488,6 @@
         <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
 
         <aside id="sidebar">
-            <!-- Botón cerrar solo visible en móvil -->
             <button class="mobile-close-btn" onclick="toggleMobileMenu()">&times;</button>
             
             <div class="filter-section">
@@ -432,6 +513,25 @@
                     <li class="filter-item"><input type="checkbox" id="saleOnly" class="filter-checkbox" onchange="applyFilters()"> En oferta</li>
                 </ul>
             </div>
+            
+            <!-- SLIDER DOBLE DE PRECIO -->
+            <div class="filter-section">
+                <h3 class="filter-title">Rango de Precio</h3>
+                
+                <div class="range-slider-container">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem; font-weight: 600;">
+                        <span id="min-price-label" style="color: var(--accent-color);">$0</span>
+                        <span id="max-price-label" style="color: var(--accent-color);">$200</span>
+                    </div>
+
+                    <div class="slider-wrapper">
+                        <div class="slider-track-bg"></div>
+                        <div class="slider-track-fill" id="slider-fill"></div>
+                        <input type="range" id="min-range" min="0" max="200" value="0" step="1" class="range-input">
+                        <input type="range" id="max-range" min="0" max="200" value="200" step="1" class="range-input">
+                    </div>
+                </div>
+            </div>
         </aside>
 
         <main>
@@ -448,29 +548,91 @@
         </main>
     </div>
 
+    <!-- MODAL DE AUTENTICACIÓN -->
+    <div id="authModal" class="auth-overlay">
+        <div class="auth-modal">
+            <button class="close-modal-btn" onclick="toggleAuthModal()">&times;</button>
+            <div class="auth-header">
+                <h2 id="authTitle">Bienvenido a YILI & LIA</h2>
+            </div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')">Iniciar Sesión</div>
+                <div class="auth-tab" id="tabRegister" onclick="switchAuthMode('register')">Registrarse</div>
+            </div>
+            <div id="loginForm" class="auth-form active">
+                <div class="input-group">
+                    <label>Email o Teléfono</label>
+                    <input type="text" id="loginInput" placeholder="Introduce tu correo o teléfono">
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPass" placeholder="Introduce tu contraseña">
+                </div>
+                <button class="btn-primary" onclick="handleLogin()">Entrar</button>
+            </div>
+            <div id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="regName" placeholder="Tu nombre">
+                </div>
+                <div class="input-group">
+                    <label>Email o Teléfono</label>
+                    <input type="text" id="regContact" placeholder="ejemplo@correo.com">
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="regPass" placeholder="Elige una contraseña segura">
+                </div>
+                <div class="input-group">
+                    <label>Municipio</label>
+                    <select id="regMunicipality">
+                        <option value="">Selecciona tu municipio</option>
+                        <option value="La Habana Vieja">La Habana Vieja</option>
+                        <option value="Centro Habana">Centro Habana</option>
+                        <option value="Playa">Playa</option>
+                        <option value="Marianao">Marianao</option>
+                        <option value="Cerro">Cerro</option>
+                        <option value="La Lisa">La Lisa</option>
+                        <option value="San Miguel del Padrón">San Miguel del Padrón</option>
+                        <option value="10 de Octubre">10 de Octubre</option>
+                        <option value="Arroyo Naranjo">Arroyo Naranjo</option>
+                        <option value="Boyeros">Boyeros</option>
+                        <option value="Cotorro">Cotorro</option>
+                        <option value="Güines">Güines</option>
+                        <option value="Habana del Este">Habana del Este</option>
+                        <option value="Regla">Regla</option>
+                        <option value="San Cristóbal">San Cristóbal</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="handleRegister()">Crear Cuenta</button>
+            </div>
+            <div class="social-login">
+                <div class="social-btn google" onclick="handleSocialLogin('Google')">
+                    <i class="fab fa-google"></i> Continuar con Google
+                </div>
+                <div class="social-btn facebook" onclick="handleSocialLogin('Facebook')">
+                    <i class="fab fa-facebook-f"></i> Continuar con Facebook
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE PRODUCTO -->
     <div id="productModal" class="modal-overlay">
         <div class="modal-content" id="modalContent">
             <button class="close-modal-btn" onclick="closeModal()">&times;</button>
             <div class="modal-body">
-                <!-- Columna de Imagen con Galería -->
                 <div class="modal-image-col">
                     <div class="gallery-wrapper">
-                        <!-- Thumbnails -->
-                        <div class="thumbnail-list" id="thumbnailList">
-                            <!-- Se generan con JS -->
-                        </div>
-                        <!-- Imagen Principal -->
+                        <div class="thumbnail-list" id="thumbnailList"></div>
                         <div class="main-image-container" id="mainImageContainer">
                             <img src="" alt="Producto" id="modalImg" class="modal-img">
-                            <!-- Overlay de Zoom (Lupa con signo más) -->
                             <div class="zoom-trigger">
                                 <i class="fas fa-search-plus"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-details-col">
                     <div class="modal-wishlist-row">
                         <button class="modal-wishlist-btn" id="modalWishlistBtn" onclick="toggleModalWishlist()">
@@ -484,19 +646,15 @@
                         <span class="modal-old-price" id="modalOldPrice"></span>
                     </div>
                     <div class="rating" id="modalRating"></div>
-                    
                     <p class="modal-description" id="modalDescription">Descripción...</p>
-
                     <div class="variant-section" id="colorSection">
                         <h4>Color: <span id="selectedColorName" style="font-weight:normal; color: var(--text-secondary);">Selecciona una opción</span></h4>
                         <div class="color-options" id="modalColors"></div>
                     </div>
-
                     <div class="variant-section">
-                        <h4>Talla:</h4>
+                        <h4>Talla: <span id="selectedSizeName" style="font-weight:normal; color: var(--text-secondary);">Selecciona una opción</span></h4>
                         <div class="size-options" id="modalSizes"></div>
                     </div>
-
                     <button class="modal-add-btn" onclick="addModalToCart()">
                         <i class="fas fa-shopping-cart"></i> Añadir a la bolsa
                     </button>
@@ -512,15 +670,56 @@
                 <h2>Tu Cesta</h2>
                 <button class="icon-btn" onclick="closeCart()"><i class="fas fa-times"></i></button>
             </div>
-            <div class="cart-items" id="cartItemsContainer">
-                <!-- Items se renderizan aquí -->
-            </div>
+            <div class="cart-items" id="cartItemsContainer"></div>
             <div class="cart-footer">
                 <div class="cart-total-row">
                     <span>Total</span>
                     <span id="cartTotal">$0.00</span>
                 </div>
-                <button class="checkout-btn" onclick="alert('¡Gracias por tu pedido! Esta es una demo.')">Hacer Pedido</button>
+                <button class="checkout-btn" onclick="openCheckout()">Ir a Pagar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHECKOUT -->
+    <div id="checkoutModal" class="auth-overlay">
+        <div class="auth-modal">
+            <button class="close-modal-btn" onclick="closeCheckout()">&times;</button>
+            <div class="auth-header">
+                <h2>Finalizar Compra</h2>
+            </div>
+            <div class="auth-form active" style="display: block;">
+                <div class="input-group">
+                    <label>Dirección de Envío</label>
+                    <input type="text" id="checkoutAddress" placeholder="Calle, número, apto..." value="">
+                </div>
+                <div class="input-group">
+                    <label>Método de Pago</label>
+                    <select id="checkoutPayment">
+                        <option value="Efectivo">Pago contra entrega</option>
+                        <option value="Transferencia">Transferencia Bancaria</option>
+                    </select>
+                </div>
+                <div style="background: var(--bg-color); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                        <span>Total a Pagar:</span>
+                        <span id="checkoutTotal">$0.00</span>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="confirmOrder()">Confirmar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL HISTORIAL DE PEDIDOS -->
+    <div id="ordersModal" class="modal-overlay">
+        <div class="wishlist-sidebar" style="max-width: 800px;">
+            <div class="cart-header" style="background: var(--bg-color);">
+                <h2><i class="fas fa-receipt" style="color: var(--accent-color);"></i> Mis Pedidos</h2>
+                <button class="icon-btn" onclick="closeOrders()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cart-items" id="ordersContainer" style="padding: 2rem;">
+                <!-- Pedidos se cargarán aquí -->
             </div>
         </div>
     </div>
@@ -532,9 +731,7 @@
                 <h2><i class="fas fa-heart" style="color: var(--heart-color);"></i> Mi Lista de Deseos</h2>
                 <button class="icon-btn" onclick="closeWishlist()"><i class="fas fa-times"></i></button>
             </div>
-            <div class="wishlist-items" id="wishlistItemsContainer">
-                <!-- Wishlist items here -->
-            </div>
+            <div class="wishlist-items" id="wishlistItemsContainer"></div>
         </div>
     </div>
 
@@ -546,228 +743,208 @@
     <div id="toast" class="toast"><i class="fas fa-check-circle"></i><span id="toastMessage">Mensaje</span></div>
 
     <script>
-        // --- 1. Base de Datos ---
+        // --- 1. BASE DE DATOS ---
         const productDatabase = [
             {
-                id: 1,
-                name: "Vestido de noche elegante de seda",
-                category: "Mujeres",
-                type: "Ropa",
-                price: 89.99,
-                original_price: 120.00,
-                rating: 4.8,
-                images: [
-                    "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Eleva tu estilo nocturno con este vestido de seda fluida. Diseño de corte imperial con cuello en V y detalles de encaje en los hombros.",
+                id: 1, name: "Vestido de noche elegante", category: "Mujeres", type: "Ropa", price: 89.99, original_price: 120.00, rating: 4.8,
+                description: "Eleva tu estilo nocturno con este vestido de seda fluida.",
                 sizes: ["S", "M", "L", "XL"],
-                colors: [{name: "Negro", code: "#1a1a1a"}, {name: "Rojo", code: "#800000"}]
+                colors: [
+                    { name: "Negro", code: "#1a1a1a", images: ["https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=60"] },
+                    { name: "Rojo", code: "#800000", images: ["https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=60"] }
+                ]
             },
             {
-                id: 2,
-                name: "Chaqueta Denim Clásica",
-                category: "Hombres",
-                type: "Ropa",
-                price: 55.00,
-                original_price: null,
-                rating: 4.5,
-                images: [
-                    "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1529139574466-a302d27925ee?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Una prenda esencial para el armario masculino. Hecho de mezclilla resistente pero cómoda. Cuenta con cuatro bolsillos funcionales.",
+                id: 2, name: "Chaqueta Denim Clásica", category: "Hombres", type: "Ropa", price: 55.00, original_price: null, rating: 4.5,
+                description: "Una prenda esencial para el armario masculino.",
                 sizes: ["M", "L", "XL", "XXL"],
-                colors: [{name: "Azul Claro", code: "#87CEEB"}, {name: "Negro", code: "#000000"}]
+                colors: [
+                    { name: "Azul Claro", code: "#87CEEB", images: ["https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1200&q=60"] },
+                    { name: "Negro", code: "#000000", images: ["https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?auto=format&fit=crop&w=1200&q=60"] }
+                ]
             },
             {
-                id: 3,
-                name: "Vestido Floral de Verano",
-                category: "Mujeres",
-                type: "Ropa",
-                price: 35.50,
-                original_price: 45.00,
-                rating: 4.2,
-                images: [
-                    "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Fresco y ligero, ideal para los días de calor. Impresión floral vibrante sobre tela de algodón transpirable.",
+                id: 3, name: "Vestido Floral Verano", category: "Mujeres", type: "Ropa", price: 35.50, original_price: 45.00, rating: 4.2,
+                description: "Fresco y ligero, ideal para los días de calor.",
                 sizes: ["S", "M", "L"],
-                colors: [{name: "Multicolor", code: "linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)"}, {name: "Rosa Pastel", code: "#FFC0CB"}]
+                colors: [{ name: "Multicolor", code: "linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)", images: ["https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 4,
-                name: "Zapatillas Coloridas para Niños",
-                category: "Niños",
-                type: "Calzado",
-                price: 29.99,
-                original_price: null,
-                rating: 4.7,
-                images: [
-                    "https://images.unsplash.com/photo-1555274175-75f79b09d5b8?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Diseñadas para la diversión infinita. Suela antideslizante resistente y cierre de velcro fácil de poner.",
+                id: 4, name: "Zapatillas Niños Color", category: "Niños", type: "Calzado", price: 29.99, original_price: null, rating: 4.7,
+                description: "Diseñadas para la diversión infinita.",
                 sizes: ["28", "30", "32", "34"],
-                colors: [{name: "Neón", code: "#39FF14"}, {name: "Azul/Rojo", code: "#FF4500"}]
+                colors: [{ name: "Neón", code: "#39FF14", images: ["https://images.unsplash.com/photo-1555274175-75f79b09d5b8?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1555274175-75f79b09d5b8?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1555274175-75f79b09d5b8?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 5,
-                name: "Camiseta de Algodón Casual",
-                category: "Hombres",
-                type: "Ropa",
-                price: 15.99,
-                original_price: 25.00,
-                rating: 4.0,
-                images: [
-                    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Básico indispensable. 100% algodón de alta calidad que no se encoge. Ajuste moderno.",
+                id: 5, name: "Camiseta Básica", category: "Hombres", type: "Ropa", price: 15.99, original_price: 25.00, rating: 4.0,
+                description: "Básico indispensable.",
                 sizes: ["S", "M", "L", "XL", "XXL"],
-                colors: [{name: "Blanco", code: "#ffffff"}, {name: "Gris", code: "#808080"}, {name: "Negro", code: "#000000"}]
+                colors: [{ name: "Blanco", code: "#ffffff", images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 6,
-                name: "Collar Dorado Plateado",
-                category: "Mujeres",
-                type: "Accesorios",
-                price: 42.00,
-                original_price: null,
-                rating: 4.9,
-                images: [
-                    "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Añade un toque de elegancia con este collar chapado en oro 18k. Diseño minimalista con un colgante delicado.",
+                id: 6, name: "Collar Dorado", category: "Mujeres", type: "Accesorios", price: 42.00, original_price: null, rating: 4.9,
+                description: "Añade un toque de elegancia.",
                 sizes: ["Única"],
-                colors: [{name: "Oro", code: "#FFD700"}, {name: "Plata", code: "#C0C0C0"}]
+                colors: [{ name: "Oro", code: "#FFD700", images: ["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 7,
-                name: "Zapatillas Deportivas para Correr",
-                category: "Hombres",
-                type: "Calzado",
-                price: 75.00,
-                original_price: 99.99,
-                rating: 4.6,
-                images: [
-                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1543508282-6319a3e2621f?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Tecnología de amortiguación avanzada para correr largas distancias. Malla transpirable.",
+                id: 7, name: "Zapatillas Running", category: "Hombres", type: "Calzado", price: 75.00, original_price: 99.99, rating: 4.6,
+                description: "Tecnología de amortiguación avanzada.",
                 sizes: ["40", "41", "42", "43", "44"],
-                colors: [{name: "Rojo/Negro", code: "#000000"}, {name: "Azul/Blanco", code: "#FFFFFF"}]
+                colors: [{ name: "Rojo/Negro", code: "#000000", images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 8,
-                name: "Vestido de Fiesta para Niñas",
-                category: "Niños",
-                type: "Ropa",
-                price: 32.50,
-                original_price: null,
-                rating: 4.8,
-                images: [
-                    "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1543817656-5cf3399aff75?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Encanto y elegancia para la pequeña de la casa. Tela de tul suave con aplicaciones de flores.",
+                id: 8, name: "Vestido Fiesta Niña", category: "Niños", type: "Ropa", price: 32.50, original_price: null, rating: 4.8,
+                description: "Encanto y elegancia para la pequeña de la casa.",
                 sizes: ["4-5 Años", "6-7 Años", "8-9 Años"],
-                colors: [{name: "Rosa", code: "#FFB6C1"}, {name: "Morado", code: "#800080"}]
+                colors: [{ name: "Rosa", code: "#FFB6C1", images: ["https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 9,
-                name: "Bolso de Cuero",
-                category: "Mujeres",
-                type: "Accesorios",
-                price: 110.00,
-                original_price: 140.00,
-                rating: 4.7,
-                images: [
-                    "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1590874103328-3732c9618c3d?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Bolso tipo tote espacioso y duradero. Cuero vegano de alta calidad con costuras reforzadas.",
+                id: 9, name: "Bolso Cuero", category: "Mujeres", type: "Accesorios", price: 110.00, original_price: 140.00, rating: 4.7,
+                description: "Bolso tipo tote espacioso y duradero.",
                 sizes: ["Única"],
-                colors: [{name: "Café", code: "#964B00"}, {name: "Negro", code: "#000000"}]
+                colors: [{ name: "Café", code: "#964B00", images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 10,
-                name: "Pantalón Corto Denim Niño",
-                category: "Niños",
-                type: "Ropa",
-                price: 20.00,
-                original_price: null,
-                rating: 4.3,
-                images: [
-                    "https://images.unsplash.com/photo-1503944168839-9184912c1eb3?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Comodidad y resistencia para jugar todo el día. Tiro medio y elástico en la cintura.",
+                id: 10, name: "Short Denim Niño", category: "Niños", type: "Ropa", price: 20.00, original_price: null, rating: 4.3,
+                description: "Comodidad y resistencia para jugar todo el día.",
                 sizes: ["8 Años", "10 Años", "12 Años"],
-                colors: [{name: "Azul", code: "#0000FF"}]
+                colors: [{ name: "Azul", code: "#0000FF", images: ["https://images.unsplash.com/photo-1503944168839-9184912c1eb3?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1503944168839-9184912c1eb3?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1503944168839-9184912c1eb3?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 11,
-                name: "Suéter de Punto de Invierno",
-                category: "Mujeres",
-                type: "Ropa",
-                price: 45.00,
-                original_price: 60.00,
-                rating: 4.5,
-                images: [
-                    "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1620799140408-ed5341cd2431?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1574483285065-bd8e9b7854d1?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Cálida abrigo para los días fríos. Tejido de punto grueso con cuello alto.",
+                id: 11, name: "Suéter Invierno", category: "Mujeres", type: "Ropa", price: 45.00, original_price: 60.00, rating: 4.5,
+                description: "Cálida abrigo para los días fríos.",
                 sizes: ["S", "M", "L"],
-                colors: [{name: "Crema", code: "#FFFDD0"}, {name: "Beige", code: "#F5F5DC"}]
+                colors: [{ name: "Crema", code: "#FFFDD0", images: ["https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1620799140408-ed5341cd2431?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1574483285065-bd8e9b7854d1?auto=format&fit=crop&w=1200&q=60"] }]
             },
             {
-                id: 12,
-                name: "Zapatos Formales de Cuero",
-                category: "Hombres",
-                type: "Calzado",
-                price: 95.00,
-                original_price: null,
-                rating: 4.8,
-                images: [
-                    "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1617606002807-b8463ca6fdeb?auto=format&fit=crop&w=1200&q=60",
-                    "https://images.unsplash.com/photo-1614252369475-531eba835eb1?auto=format&fit=crop&w=1200&q=60"
-                ],
-                description: "Para la oficina o eventos formales. Cuero pulido con clásicos cordones.",
+                id: 12, name: "Zapatos Formales", category: "Hombres", type: "Calzado", price: 95.00, original_price: null, rating: 4.8,
+                description: "Para la oficina o eventos formales.",
                 sizes: ["40", "41", "42", "43", "44", "45"],
-                colors: [{name: "Negro", code: "#000000"}, {name: "Café", code: "#8B4513"}]
+                colors: [{ name: "Negro", code: "#000000", images: ["https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1617606002807-b8463ca6fdeb?auto=format&fit=crop&w=1200&q=60", "https://images.unsplash.com/photo-1614252369475-531eba835eb1?auto=format&fit=crop&w=1200&q=60"] }]
             }
         ];
 
-        // --- 2. Estado Global (Con Persistencia LocalStorage) ---
-        let currentData = [...productDatabase];
-        let currentCategory = 'Todos';
+        // --- 2. ESTADO Y USUARIOS ---
+        let usersDB = JSON.parse(localStorage.getItem('yili_users')) || [{id:101, name:"Demo", contact:"demo@test.com", password:"123", municipality: "Habana Vieja", orders:[]}];
+        let currentUser = JSON.parse(localStorage.getItem('yili_current_user')) || null;
         let wishlist = JSON.parse(localStorage.getItem('yili_wishlist')) || [];
         let cart = JSON.parse(localStorage.getItem('yili_cart')) || [];
+        let currentData = [...productDatabase];
+        let currentCategory = 'Todos';
         let activeModalProduct = null;
         let selectedSize = null;
         let selectedColor = null;
+        let selectedColorIndex = 0;
 
-        // --- 3. Renderizado Grid ---
-        const grid = document.getElementById('productGrid');
-        const countLabel = document.getElementById('resultCount');
+        // --- 3. AUTH Y UI (ACTUALIZADO CON DROPDOWN) ---
+        const authModal = document.getElementById('authModal');
+        const authBtnText = document.getElementById('authBtnText');
+        const dropdownMenu = document.getElementById('userDropdownMenu');
+        const guestOptions = document.getElementById('guestOptions');
+        const userOptions = document.getElementById('userOptions');
+        const dropdownUserName = document.getElementById('dropdownUserName');
 
+        function toggleUserDropdown() {
+            dropdownMenu.classList.toggle('show');
+        }
+
+        // Cerrar dropdown si clicamos fuera
+        document.addEventListener('click', function(event) {
+            const isClickInside = document.querySelector('.user-dropdown').contains(event.target);
+            if (!isClickInside) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+
+        function openAuthAndClose(mode) {
+            dropdownMenu.classList.remove('show');
+            toggleAuthModal(); // Abre el modal
+            // Esperar un poco a que el modal se renderice o cambiar pestaña directamente
+            setTimeout(() => switchAuthMode(mode), 50);
+        }
+
+        function logoutAndClose() {
+            dropdownMenu.classList.remove('show');
+            logout();
+        }
+
+        function updateAuthUI() {
+            if (currentUser) {
+                authBtnText.textContent = currentUser.name.split(' ')[0];
+                guestOptions.style.display = 'none';
+                userOptions.style.display = 'block';
+                dropdownUserName.textContent = currentUser.name;
+            } else {
+                authBtnText.textContent = "Cuenta";
+                guestOptions.style.display = 'block';
+                userOptions.style.display = 'none';
+            }
+        }
+
+        function toggleAuthModal() { if(currentUser) return; authModal.classList.toggle('active'); }
+        
+        function switchAuthMode(mode) {
+            document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+            document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
+            document.getElementById('loginForm').classList.toggle('active', mode === 'login');
+            document.getElementById('registerForm').classList.toggle('active', mode === 'register');
+        }
+
+        function handleLogin() {
+            const input = document.getElementById('loginInput').value;
+            const pass = document.getElementById('loginPass').value;
+            const user = usersDB.find(u => (u.contact === input && u.password === pass));
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('yili_current_user', JSON.stringify(user));
+                authModal.classList.remove('active');
+                updateAuthUI();
+                showToast(`Bienvenido, ${user.name}`);
+            } else { alert("Usuario o contraseña incorrectos."); }
+        }
+
+        function handleRegister() {
+            const name = document.getElementById('regName').value;
+            const contact = document.getElementById('regContact').value;
+            const pass = document.getElementById('regPass').value;
+            const municipality = document.getElementById('regMunicipality').value;
+            if(!name || !contact || !pass || !municipality) return alert("Completa todos los campos");
+            
+            if(usersDB.find(u => u.contact === contact)) return alert("Usuario ya existe");
+
+            const newUser = { id: Date.now(), name, contact, password: pass, municipality, orders:[] };
+            usersDB.push(newUser);
+            localStorage.setItem('yili_users', JSON.stringify(usersDB));
+            currentUser = newUser;
+            localStorage.setItem('yili_current_user', JSON.stringify(newUser));
+            authModal.classList.remove('active');
+            updateAuthUI();
+            showToast("Cuenta creada con éxito");
+        }
+
+        function handleSocialLogin(provider) {
+            const newUser = { id: Date.now(), name: `Usuario ${provider}`, contact: `user${Date.now()}@${provider.toLowerCase()}.com`, password: "social", municipality: "Web", orders:[] };
+            usersDB.push(newUser);
+            localStorage.setItem('yili_users', JSON.stringify(usersDB));
+            currentUser = newUser;
+            localStorage.setItem('yili_current_user', JSON.stringify(currentUser));
+            authModal.classList.remove('active');
+            updateAuthUI();
+            showToast(`Bienvenido vía ${provider}`);
+        }
+
+        function logout() {
+            currentUser = null; cart = []; wishlist = [];
+            localStorage.removeItem('yili_current_user');
+            updateAuthUI(); updateCartUI(); updateWishlistUI();
+            showToast("Sesión cerrada");
+        }
+
+        // --- 4. RENDERIZADO GRID ---
         function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            const countLabel = document.getElementById('resultCount');
             grid.innerHTML = '';
             if (products.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-secondary);">No se encontraron productos.</div>`;
@@ -775,27 +952,23 @@
                 return;
             }
             countLabel.textContent = `${products.length} Resultado${products.length !== 1 ? 's' : ''}`;
-
             products.forEach(product => {
+                const firstColor = product.colors[0];
+                const mainImage = firstColor && firstColor.images ? firstColor.images[0] : '';
                 const discount = product.original_price ? Math.round(((product.original_price - product.price) / product.original_price) * 100) : 0;
                 const isWishlisted = wishlist.some(w => w.id === product.id);
-                const mainImage = product.images ? product.images[0] : '';
-
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openModal(product.id);
-                
                 card.innerHTML = `
                     <div class="card-image-container">
-                        ${discount > 0 ? `<span class="badge">-${discount}%</span>` : ''}
+                        ${discount > 0 ? `<span class="badge-card">-${discount}%</span>` : ''}
                         <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist(${product.id})">
                             <i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i>
                         </button>
                         <img src="${mainImage}" alt="${product.name}" class="card-img">
                         <div class="card-actions">
-                            <button class="add-to-cart-btn">
-                                <i class="fas fa-eye"></i> Ver
-                            </button>
+                            <button class="add-to-cart-btn"><i class="fas fa-eye"></i> Ver</button>
                         </div>
                     </div>
                     <div class="card-info">
@@ -805,8 +978,7 @@
                             ${product.original_price ? `<span class="old-price">$${product.original_price.toFixed(2)}</span>` : ''}
                         </div>
                         <div class="rating">${getStarRating(product.rating)} (${product.rating})</div>
-                    </div>
-                `;
+                    </div>`;
                 grid.appendChild(card);
             });
         }
@@ -821,81 +993,42 @@
             return stars;
         }
 
-        // --- 4. Lógica de Wishlist con Persistencia ---
-        function toggleWishlist(productId) {
-            const product = productDatabase.find(p => p.id === productId);
-            if(!product) return;
-            const index = wishlist.findIndex(w => w.id === productId);
-            if(index === -1) {
-                wishlist.push(product);
-                showToast("Añadido a lista de deseos");
-            } else {
-                wishlist.splice(index, 1);
-                showToast("Eliminado de lista de deseos");
+        // --- 5. FILTROS Y SLIDER ---
+        const minRange = document.getElementById('min-range');
+        const maxRange = document.getElementById('max-range');
+        const fillBar = document.getElementById('slider-fill');
+        const minLabel = document.getElementById('min-price-label');
+        const maxLabel = document.getElementById('max-price-label');
+
+        function updateSlider() {
+            let minVal = parseInt(minRange.value);
+            let maxVal = parseInt(maxRange.value);
+            const maxRangeLimit = parseInt(maxRange.max);
+            const gap = 1; 
+
+            if (maxVal - minVal < gap) {
+                if (this === minRange) { minRange.value = maxVal - gap; minVal = parseInt(minRange.value); } 
+                else { maxRange.value = minVal + gap; maxVal = parseInt(maxRange.value); }
             }
-            localStorage.setItem('yili_wishlist', JSON.stringify(wishlist));
-            updateWishlistUI();
+
+            const percentMin = (minVal / maxRangeLimit) * 100;
+            const percentMax = (maxVal / maxRangeLimit) * 100;
+
+            fillBar.style.left = percentMin + "%";
+            fillBar.style.width = (percentMax - percentMin) + "%";
+            minLabel.textContent = "$" + minVal;
+            maxLabel.textContent = "$" + maxVal;
+
+            applyFilters();
         }
 
-        function updateWishlistUI() {
-            document.getElementById('wishlistCount').textContent = wishlist.length;
-            if(activeModalProduct) {
-                const btn = document.getElementById('modalWishlistBtn');
-                const isWishlisted = wishlist.some(w => w.id === activeModalProduct.id);
-                if(isWishlisted) {
-                    btn.classList.add('active');
-                    btn.innerHTML = '<i class="fas fa-heart"></i> Guardado';
-                } else {
-                    btn.classList.remove('active');
-                    btn.innerHTML = '<i class="far fa-heart"></i> Guardar en lista de deseos';
-                }
-            }
-            if(document.getElementById('wishlistModal').classList.contains('active')) renderWishlistModal();
-            renderProducts(currentData);
-        }
+        minRange.addEventListener('input', updateSlider);
+        maxRange.addEventListener('input', updateSlider);
 
-        function renderWishlistModal() {
-            const container = document.getElementById('wishlistItemsContainer');
-            container.innerHTML = '';
-            if(wishlist.length === 0) {
-                container.innerHTML = `<div class="cart-empty" style="grid-column: 1/-1;"><i class="far fa-heart" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i><p>Tu lista de deseos está vacía.</p></div>`;
-                return;
-            }
-            wishlist.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'wishlist-item-card';
-                const thumb = item.images ? item.images[0] : '';
-                el.innerHTML = `
-                    <div class="wishlist-img" onclick="openModal(${item.id}); closeWishlist();">
-                        <img src="${thumb}" alt="${item.name}">
-                        <button class="wishlist-delete" onclick="event.stopPropagation(); toggleWishlist(${item.id})"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                    <div class="wishlist-info">
-                        <div class="wishlist-title">${item.name}</div>
-                        <div class="wishlist-price">$${item.price.toFixed(2)}</div>
-                    </div>
-                `;
-                container.appendChild(el);
-            });
-        }
-
-        function openWishlist() {
-            document.getElementById('wishlistModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            renderWishlistModal();
-        }
-
-        function closeWishlist() {
-            document.getElementById('wishlistModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // --- 5. Filtros y Búsqueda ---
-        function filterByCategory(category) {
-            currentCategory = category;
-            document.querySelectorAll('.filter-item').forEach(el => el.classList.remove('active'));
-            const desktopItems = document.querySelectorAll('#categoryFilters .filter-item');
-            desktopItems.forEach(item => { if(item.textContent.includes(category)) item.classList.add('active'); });
+        function filterByCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('#categoryFilters .filter-item').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
             applyFilters();
         }
 
@@ -903,19 +1036,18 @@
             const typeCheckboxes = document.querySelectorAll('#typeFilters .filter-checkbox:checked');
             const selectedTypes = Array.from(typeCheckboxes).map(cb => cb.value);
             const saleOnly = document.getElementById('saleOnly').checked;
+            const minPrice = parseInt(minRange.value);
+            const maxPrice = parseInt(maxRange.value);
 
             currentData = productDatabase.filter(product => {
                 const matchCategory = currentCategory === 'Todos' || product.category === currentCategory;
                 const matchType = selectedTypes.length === 0 || selectedTypes.includes(product.type);
                 const matchSale = !saleOnly || (saleOnly && product.original_price !== null);
-                return matchCategory && matchType && matchSale;
+                const matchPrice = product.price >= minPrice && product.price <= maxPrice;
+                return matchCategory && matchType && matchSale && matchPrice;
             });
             renderProducts(currentData);
-            
-            // Si estamos en móvil, cerrar el menú después de filtrar para ver resultados
-            if(window.innerWidth < 900) {
-                toggleMobileMenu(false); // false fuerza a cerrar
-            }
+            if(window.innerWidth < 900) toggleMobileMenu(false);
         }
 
         function sortProducts(criteria) {
@@ -928,278 +1060,295 @@
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            const filtered = productDatabase.filter(p => p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term) || p.type.toLowerCase().includes(term));
-            renderProducts(filtered);
+            renderProducts(productDatabase.filter(p => p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term)));
         });
 
-        // --- 6. LÓGICA DEL MENÚ MÓVIL (Estilo Amazon) ---
-        function toggleMobileMenu(forceState) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobileOverlay');
-            
-            const isOpen = forceState !== undefined ? forceState : !sidebar.classList.contains('open');
-
-            if (isOpen) {
-                sidebar.classList.add('open');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Evitar scroll de fondo
-            } else {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('active');
-                document.body.style.overflow = 'auto'; // Restaurar scroll
-            }
-        }
-
-        // --- 7. LÓGICA DEL MODAL PRODUCTO CON ZOOM ---
-        const modal = document.getElementById('productModal');
-
-        function openModal(productId) {
-            const product = productDatabase.find(p => p.id === productId);
+        // --- 6. MODAL PRODUCTO ---
+        function openModal(id) {
+            const product = productDatabase.find(p => p.id === id);
             if(!product) return;
-            activeModalProduct = product;
-            selectedSize = null;
-            selectedColor = null;
-
-            // Reset Zoom state
+            activeModalProduct = product; selectedSize = null; selectedColor = null; selectedColorIndex = 0;
             document.getElementById('modalContent').classList.remove('is-zoomed');
-
-            // Datos básicos
+            
             document.getElementById('modalCategory').textContent = product.category + ' - ' + product.type;
             document.getElementById('modalTitle').textContent = product.name;
             document.getElementById('modalPrice').textContent = '$' + product.price.toFixed(2);
             document.getElementById('modalDescription').textContent = product.description;
             document.getElementById('modalRating').innerHTML = getStarRating(product.rating) + ` (${product.rating})`;
             
-            const oldPriceEl = document.getElementById('modalOldPrice');
-            if(product.original_price) {
-                oldPriceEl.textContent = '$' + product.original_price.toFixed(2);
-                oldPriceEl.style.display = 'inline-block';
-            } else { oldPriceEl.style.display = 'none'; }
+            const oldEl = document.getElementById('modalOldPrice');
+            oldEl.style.display = product.original_price ? 'inline-block' : 'none';
+            if(product.original_price) oldEl.textContent = '$' + product.original_price.toFixed(2);
 
-            // GALERÍA DE IMÁGENES
-            const thumbnailList = document.getElementById('thumbnailList');
-            thumbnailList.innerHTML = '';
-            
-            if(product.images && product.images.length > 0) {
-                changeMainImage(product.images[0]);
-                product.images.forEach((imgUrl, index) => {
-                    const thumb = document.createElement('div');
-                    thumb.className = `thumbnail-item ${index === 0 ? 'active' : ''}`;
-                    thumb.innerHTML = `<img src="${imgUrl}" alt="Vista ${index+1}">`;
-                    thumb.onclick = () => {
-                        document.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
-                        thumb.classList.add('active');
-                        changeMainImage(imgUrl);
-                    };
-                    thumbnailList.appendChild(thumb);
-                });
-            } else {
-                changeMainImage('https://via.placeholder.com/500');
-            }
+            const thumbList = document.getElementById('thumbnailList'); thumbList.innerHTML = '';
+            const loadThumbs = (imgs) => {
+                thumbList.innerHTML = '';
+                if(imgs && imgs.length > 0) {
+                    changeMainImage(imgs[0]);
+                    imgs.forEach((url, idx) => {
+                        const t = document.createElement('div');
+                        t.className = `thumbnail-item ${idx===0?'active':''}`;
+                        t.innerHTML = `<img src="${url}">`;
+                        t.onclick = () => { document.querySelectorAll('.thumbnail-item').forEach(x=>x.classList.remove('active')); t.classList.add('active'); changeMainImage(url); };
+                        thumbList.appendChild(t);
+                    });
+                }
+            };
+            loadThumbs(product.colors[0].images);
 
-            // Colores
             const colorContainer = document.getElementById('modalColors');
             const colorNameSpan = document.getElementById('selectedColorName');
-            colorContainer.innerHTML = '';
-            colorNameSpan.textContent = 'Selecciona una opción';
-            product.colors.forEach((color) => {
+            colorContainer.innerHTML = ''; colorNameSpan.textContent = product.colors[0].name; selectedColor = product.colors[0].name;
+            
+            product.colors.forEach((c, i) => {
                 const circle = document.createElement('div');
-                circle.className = 'color-circle';
-                circle.style.backgroundColor = color.code;
-                circle.title = color.name;
+                circle.className = `color-circle ${i===0?'selected':''}`;
+                circle.style.backgroundColor = c.code;
+                circle.title = c.name;
                 circle.onclick = () => {
-                    document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('selected'));
+                    document.querySelectorAll('.color-circle').forEach(x=>x.classList.remove('selected'));
                     circle.classList.add('selected');
-                    selectedColor = color.name;
-                    colorNameSpan.textContent = color.name;
+                    selectedColor = c.name; selectedColorIndex = i; colorNameSpan.textContent = c.name;
+                    loadThumbs(c.images);
                 };
                 colorContainer.appendChild(circle);
             });
 
-            // Tallas
             const sizeContainer = document.getElementById('modalSizes');
-            sizeContainer.innerHTML = '';
-            product.sizes.forEach(size => {
+            const sizeNameSpan = document.getElementById('selectedSizeName');
+            sizeContainer.innerHTML = ''; sizeNameSpan.textContent = 'Selecciona';
+            product.sizes.forEach(s => {
                 const box = document.createElement('div');
                 box.className = 'size-box';
-                box.textContent = size;
+                box.textContent = s;
                 box.onclick = () => {
-                    document.querySelectorAll('.size-box').forEach(b => b.classList.remove('selected'));
-                    box.classList.add('selected');
-                    selectedSize = size;
+                    document.querySelectorAll('.size-box').forEach(b=>b.classList.remove('selected'));
+                    box.classList.add('selected'); selectedSize = s; sizeNameSpan.textContent = s;
                 };
                 sizeContainer.appendChild(box);
             });
 
-            modal.classList.add('active');
+            document.getElementById('productModal').classList.add('active');
             document.body.style.overflow = 'hidden';
-            updateWishlistUI(); 
+            updateWishlistUI();
         }
 
         function changeMainImage(url) {
-            const imgEl = document.getElementById('modalImg');
-            imgEl.style.opacity = '0.5';
-            setTimeout(() => {
-                imgEl.src = url;
-                imgEl.onload = () => { imgEl.style.opacity = '1'; };
-            }, 150);
+            const img = document.getElementById('modalImg');
+            img.style.opacity = '0.5';
+            setTimeout(() => { img.src = url; img.onload = () => img.style.opacity = '1'; }, 150);
         }
 
-        function closeModal() {
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            activeModalProduct = null;
-            document.getElementById('modalContent').classList.remove('is-zoomed');
-        }
+        document.getElementById('mainImageContainer').addEventListener('click', () => document.getElementById('modalContent').classList.toggle('is-zoomed'));
+        function closeModal() { document.getElementById('productModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
+        document.getElementById('productModal').addEventListener('click', e => { if(e.target.id === 'productModal') closeModal(); });
+
+        // --- 7. CARRITO Y CHECKOUT ---
+        function openCart() { document.getElementById('cartModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeCart() { document.getElementById('cartModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
         
-        function toggleModalWishlist() {
-            if(activeModalProduct) {
-                toggleWishlist(activeModalProduct.id);
-            }
-        }
-
-        modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
-
-        // --- 8. LÓGICA DEL CARRITO con Persistencia ---
-        const cartModal = document.getElementById('cartModal');
-        const cartItemsContainer = document.getElementById('cartItemsContainer');
-        const cartTotalEl = document.getElementById('cartTotal');
-        const cartCountEl = document.getElementById('cartCount');
-
         function addModalToCart() {
-            if(!activeModalProduct) return;
-            if(activeModalProduct.colors.length > 0 && !selectedColor) {
-                alert("Por favor selecciona un color."); return;
-            }
-            if(!selectedSize) {
-                alert("Por favor selecciona una talla."); return;
-            }
+            if(!currentUser) { toggleAuthModal(); closeModal(); showToast("Inicia sesión para comprar"); return; }
+            if(!selectedColor) { alert("Selecciona un color"); return; }
+            if(!selectedSize) { alert("Selecciona una talla"); return; }
 
-            const cartKey = activeModalProduct.id + '-' + selectedSize + '-' + selectedColor;
-            const existingItem = cart.find(item => item.cartKey === cartKey);
+            const key = activeModalProduct.id + '-' + selectedSize + '-' + selectedColor;
+            const existing = cart.find(i => i.cartKey === key);
+            const img = activeModalProduct.colors[selectedColorIndex].images[0];
 
-            if(existingItem) {
-                existingItem.qty++;
-            } else {
-                const mainImg = activeModalProduct.images ? activeModalProduct.images[0] : '';
-                cart.push({
-                    cartKey: cartKey,
-                    id: activeModalProduct.id,
-                    name: activeModalProduct.name,
-                    price: activeModalProduct.price,
-                    size: selectedSize,
-                    color: selectedColor,
-                    image: mainImg,
-                    qty:1
-                });
-            }
+            if(existing) existing.qty++;
+            else cart.push({ cartKey: key, id: activeModalProduct.id, name: activeModalProduct.name, price: activeModalProduct.price, size: selectedSize, color: selectedColor, image: img, qty: 1 });
+
             localStorage.setItem('yili_cart', JSON.stringify(cart));
             updateCartUI();
-            showToast("Producto añadido a la cesta");
+            showToast("Producto añadido");
             closeModal();
         }
 
         function updateCartUI() {
-            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-            cartCountEl.textContent = totalQty;
-            cartItemsContainer.innerHTML = '';
-            let totalAmount = 0;
-
-            if(cart.length === 0) {
-                cartItemsContainer.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-basket" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i><p>Tu cesta está vacía.</p></div>`;
-            } else {
+            const cont = document.getElementById('cartItemsContainer');
+            document.getElementById('cartCount').textContent = cart.reduce((a,b)=>a+b.qty,0);
+            cont.innerHTML = '';
+            let total = 0;
+            if(!cart.length) { cont.innerHTML = '<div class="cart-empty">Tu cesta está vacía</div>'; }
+            else {
                 cart.forEach(item => {
-                    totalAmount += item.price * item.qty;
-                    const itemEl = document.createElement('div');
-                    itemEl.className = 'cart-item';
-                    itemEl.innerHTML = `
-                        <img src="${item.image}" class="cart-item-img" alt="${item.name}">
+                    total += item.price * item.qty;
+                    const el = document.createElement('div');
+                    el.className = 'cart-item';
+                    el.innerHTML = `
+                        <img src="${item.image}" class="cart-item-img">
                         <div class="cart-item-details">
                             <div class="cart-item-title">${item.name}</div>
                             <div class="cart-item-variant">Talla: ${item.size} | Color: ${item.color}</div>
                             <div class="cart-item-price">$${item.price.toFixed(2)}</div>
                             <div class="cart-controls">
                                 <div class="qty-selector">
-                                    <button class="qty-btn" onclick="changeQty('${item.cartKey}', -1)">-</button>
+                                    <button class="qty-btn" onclick="changeQty('${item.cartKey}',-1)">-</button>
                                     <span class="qty-val">${item.qty}</span>
-                                    <button class="qty-btn" onclick="changeQty('${item.cartKey}', 1)">+</button>
+                                    <button class="qty-btn" onclick="changeQty('${item.cartKey}',1)">+</button>
                                 </div>
                                 <button class="remove-btn" onclick="removeFromCart('${item.cartKey}')">Eliminar</button>
                             </div>
-                        </div>
-                    `;
-                    cartItemsContainer.appendChild(itemEl);
+                        </div>`;
+                    cont.appendChild(el);
                 });
             }
-            cartTotalEl.textContent = '$' + totalAmount.toFixed(2);
+            document.getElementById('cartTotal').textContent = '$' + total.toFixed(2);
         }
 
-        function changeQty(cartKey, delta) {
-            const item = cart.find(i => i.cartKey === cartKey);
-            if(item) {
-                item.qty += delta;
-                if(item.qty <= 0) {
-                    removeFromCart(cartKey);
-                } else {
-                    localStorage.setItem('yili_cart', JSON.stringify(cart));
-                    updateCartUI();
-                }
-            }
+        function changeQty(key, d) {
+            const item = cart.find(i => i.cartKey === key);
+            if(item) { item.qty += d; if(item.qty<=0) removeFromCart(key); else { localStorage.setItem('yili_cart', JSON.stringify(cart)); updateCartUI(); } }
+        }
+        function removeFromCart(key) { cart = cart.filter(i => i.cartKey !== key); localStorage.setItem('yili_cart', JSON.stringify(cart)); updateCartUI(); }
+
+        // --- 8. CHECKOUT Y PEDIDOS ---
+        function openCheckout() {
+            if(!cart.length) return showToast("Cesta vacía");
+            if(!currentUser) { toggleAuthModal(); closeCart(); return; }
+            const total = cart.reduce((s,i)=>s+(i.price*i.qty),0);
+            document.getElementById('checkoutTotal').textContent = '$' + total.toFixed(2);
+            document.getElementById('checkoutAddress').value = currentUser.municipality || '';
+            document.getElementById('checkoutModal').classList.add('active');
+        }
+        function closeCheckout() { document.getElementById('checkoutModal').classList.remove('active'); }
+
+        function confirmOrder() {
+            const addr = document.getElementById('checkoutAddress').value;
+            if(!addr) return alert("Indica una dirección");
+            
+            const newOrder = {
+                id: 'ORD-' + Date.now().toString().slice(-6),
+                date: new Date().toLocaleDateString(),
+                total: cart.reduce((s,i)=>s+(i.price*i.qty),0),
+                status: 'Procesando',
+                items: [...cart],
+                address: addr
+            };
+
+            if(!currentUser.orders) currentUser.orders = [];
+            currentUser.orders.unshift(newOrder);
+            
+            const uIdx = usersDB.findIndex(u => u.id === currentUser.id);
+            if(uIdx!==-1) { usersDB[uIdx] = currentUser; localStorage.setItem('yili_users', JSON.stringify(usersDB)); }
+            localStorage.setItem('yili_current_user', JSON.stringify(currentUser));
+
+            cart = []; localStorage.setItem('yili_cart', JSON.stringify(cart));
+            updateCartUI(); closeCheckout();
+            showToast(`Pedido ${newOrder.id} realizado!`);
+            openOrders();
         }
 
-        function removeFromCart(cartKey) {
-            cart = cart.filter(item => item.cartKey !== cartKey);
-            localStorage.setItem('yili_cart', JSON.stringify(cart));
-            updateCartUI();
-        }
-
-        function openCart() {
-            cartModal.classList.add('active');
+        function openOrders() {
+            if(!currentUser) return toggleAuthModal();
+            renderOrders();
+            document.getElementById('ordersModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
+        function closeOrders() { document.getElementById('ordersModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
 
-        function closeCart() {
-            cartModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
+        function renderOrders() {
+            const c = document.getElementById('ordersContainer');
+            c.innerHTML = '';
+            if(!currentUser.orders || !currentUser.orders.length) { c.innerHTML = '<div class="cart-empty">Sin pedidos</div>'; return; }
+            
+            currentUser.orders.forEach(o => {
+                const el = document.createElement('div');
+                el.className = 'order-card';
+                el.innerHTML = `
+                    <div class="order-header">
+                        <span><strong>#${o.id}</strong> - ${o.date}</span>
+                        <span class="order-status">${o.status}</span>
+                    </div>
+                    <div style="margin-bottom:1rem;">${o.items.map(i=>`
+                        <div class="order-item-preview">
+                            <img src="${i.image}"><span>${i.qty}x ${i.name} (${i.size})</span>
+                        </div>`).join('')}
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="color:var(--text-secondary); font-size:0.85rem;">${o.address}</span>
+                        <span style="font-weight:700;">Total: $${o.total.toFixed(2)}</span>
+                    </div>`;
+                c.appendChild(el);
+            });
         }
 
-        // --- 9. Lógica de Zoom (Lupa) ---
-        const mainImageContainer = document.getElementById('mainImageContainer');
-        mainImageContainer.addEventListener('click', (e) => {
-            document.getElementById('modalContent').classList.toggle('is-zoomed');
-        });
-
-        // --- 10. UI General ---
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMessage').textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        // --- 9. WISHLIST ---
+        function toggleWishlist(id) {
+            if(!currentUser) { toggleAuthModal(); showToast("Inicia sesión"); return; }
+            const idx = wishlist.findIndex(w => w.id === id);
+            if(idx === -1) { wishlist.push(productDatabase.find(p=>p.id===id)); showToast("Añadido a favoritos"); }
+            else { wishlist.splice(idx, 1); showToast("Eliminado de favoritos"); }
+            localStorage.setItem('yili_wishlist', JSON.stringify(wishlist));
+            updateWishlistUI();
         }
+        function updateWishlistUI() {
+            document.getElementById('wishlistCount').textContent = wishlist.length;
+            renderProducts(currentData);
+            if(activeModalProduct) {
+                const btn = document.getElementById('modalWishlistBtn');
+                const is = wishlist.some(w=>w.id===activeModalProduct.id);
+                btn.className = `modal-wishlist-btn ${is?'active':''}`;
+                btn.innerHTML = `<i class="${is?'fas':'far'} fa-heart"></i> ${is?'Guardado':'Guardar en lista'}`;
+            }
+            if(document.getElementById('wishlistModal').classList.contains('active')) renderWishlistModal();
+        }
+        function openWishlist() { if(!currentUser) return toggleAuthModal(); document.getElementById('wishlistModal').classList.add('active'); document.body.style.overflow='hidden'; renderWishlistModal(); }
+        function closeWishlist() { document.getElementById('wishlistModal').classList.remove('active'); document.body.style.overflow='auto'; }
+        function renderWishlistModal() {
+            const c = document.getElementById('wishlistItemsContainer');
+            c.innerHTML = '';
+            if(!wishlist.length) { c.innerHTML = '<div class="cart-empty" style="grid-column:1/-1">Lista vacía</div>'; return; }
+            wishlist.forEach(item => {
+                const img = item.colors ? item.colors[0].images[0] : '';
+                const el = document.createElement('div');
+                el.className = 'wishlist-item-card';
+                el.innerHTML = `
+                    <div class="wishlist-img" onclick="openModal(${item.id}); closeWishlist();">
+                        <img src="${img}">
+                        <button class="wishlist-delete" onclick="event.stopPropagation(); toggleWishlist(${item.id})"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                    <div class="wishlist-info"><div class="wishlist-title">${item.name}</div><div class="wishlist-price">$${item.price.toFixed(2)}</div></div>`;
+                c.appendChild(el);
+            });
+        }
+        function toggleModalWishlist() { if(activeModalProduct) toggleWishlist(activeModalProduct.id); }
 
+        // --- 10. GENERAL ---
+        function showToast(m) { const t = document.getElementById('toast'); document.getElementById('toastMessage').textContent = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
+        
         const themeBtn = document.getElementById('themeToggle');
         const icon = themeBtn.querySelector('i');
-        if(localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            icon.classList.replace('fa-moon', 'fa-sun');
-        }
+        if(localStorage.getItem('theme') === 'dark') { document.documentElement.setAttribute('data-theme','dark'); icon.classList.replace('fa-moon','fa-sun'); }
         themeBtn.addEventListener('click', () => {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            if(isDark) {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-                icon.classList.replace('fa-sun', 'fa-moon');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                icon.classList.replace('fa-moon', 'fa-sun');
-            }
+            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
         });
 
-        // Inicializar
-        renderProducts(productDatabase);
+        function toggleMobileMenu(force) {
+            const sb = document.getElementById('sidebar'); const ov = document.getElementById('mobileOverlay');
+            const isOpen = force !== undefined ? force : !sb.classList.contains('open');
+            if(isOpen) { sb.classList.add('open'); ov.classList.add('active'); document.body.style.overflow='hidden'; }
+            else { sb.classList.remove('open'); ov.classList.remove('active'); document.body.style.overflow='auto'; }
+        }
+
+        // --- INICIALIZACIÓN ---
+        window.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
+            renderProducts(productDatabase);
+            updateCartUI();
+            updateSlider();
+            
+            const maxPrice = Math.max(...productDatabase.map(p => p.price));
+            if(maxRange && minRange) {
+                maxRange.max = maxPrice; minRange.max = maxPrice;
+                maxRange.value = maxPrice; 
+                updateSlider();
+            }
+        });
     </script>
 </body>
 </html>
-
-
