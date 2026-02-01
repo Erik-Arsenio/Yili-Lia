@@ -411,6 +411,9 @@
             display: flex; align-items: center; gap: 10px; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; z-index: 3000;
         }
         .toast.show { transform: translateY(0); opacity: 1; }
+
+        .hidden { display: none; }
+        
         footer { background-color: var(--card-bg); padding: 3rem 2rem; margin-top: 2rem; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-secondary); }
     </style>
 </head>
@@ -515,7 +518,7 @@
             </div>
             
             <!-- SLIDER DOBLE DE PRECIO -->
-            <div class="filter-section">
+            <div class="filter-section hidden">
                 <h3 class="filter-title">Rango de Precio</h3>
                 
                 <div class="range-slider-container">
@@ -1352,4 +1355,5 @@
     </script>
 </body>
 </html>
+
 
