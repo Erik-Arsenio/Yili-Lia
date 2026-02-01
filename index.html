@@ -1368,10 +1368,21 @@
                 maxRange.value = maxPrice; 
                 updateSlider();
             }
+             // --- NUEVO: Abrir modal si hay parámetro ?id=X en la URL ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const productIdFromUrl = urlParams.get('id');
+            if (productIdFromUrl) {
+                const idNum = parseInt(productIdFromUrl);
+                // Verificamos que el ID exista en la base de datos antes de abrir
+                if (productDatabase.find(p => p.id === idNum)) {
+                    openModal(idNum);
+                }
+            }
         });
     </script>
 </body>
 </html>
+
 
 
 
